@@ -1,6 +1,6 @@
 "use strict";
 
-require("should");
+const expect = require("chai").expect;
 const config = require("../../config");
 const WitClient = require("../../server/witClient");
 
@@ -12,8 +12,8 @@ describe("witClient", () => {
       witClient.ask("What is the current time in Vienna?", (err, response) => {
         if (err) return done(err);
 
-        response.intent[0].value.should.equal("time");
-        response.location[0].value.should.equal("Vienna");
+        expect(response.intent[0].value).to.equal("time");
+        expect(response.location[0].value).to.equal("Vienna");
 
         return done();
       });

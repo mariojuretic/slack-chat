@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/service.js",
   "scripts": {
-    "test": "nyc mocha --recursive test",
+    "test": "nyc mocha --recursive test --exit",
     "start": "node bin/run"
   },
   "author": "",
@@ -16,9 +16,10 @@
     "superagent": "^5.0.2"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-string": "^1.5.0",
     "mocha": "^6.1.4",
     "nyc": "^14.0.0",
-    "should": "^13.2.3",
     "supertest": "^4.0.2"
   }
 }

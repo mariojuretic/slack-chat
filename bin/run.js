@@ -2,23 +2,18 @@
 
 const config = require("../config");
 
-const slackClient = require("../server/slackClient");
+const SlackClient = require("../server/slackClient");
 const service = require("../server/service")(config);
 const http = require("http");
 const server = http.createServer(service);
 
-const witToken = config.witToken;
 const WitClient = require("../server/witClient");
-const witClient = new WitClient(witToken);
-
-const slackToken = config.slackToken;
-const slackLogLevel = "verbose";
+const witClient = new WitClient(config.witToken);
 
 const serviceRegistry = service.get("serviceRegistry");
-const rtm = slackClient.init(slackToken, slackLogLevel, witClient, serviceRegistry);
-rtm.start();
+const slackClient = new SlackClient(config.slackToken, config.slackLogLevel, witClient, serviceRegistry);
 
-slackClient.addAuthenticatedHandler(rtm, () => server.listen(3000));
+slackClient.start(() => server.listen(3000));
 
 server.on("listening", function() {
   console.log(`Server is listening on port ${server.address().port} in ${service.get("env")} mode.`);
