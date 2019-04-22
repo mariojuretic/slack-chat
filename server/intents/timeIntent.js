@@ -2,7 +2,7 @@
 
 const request = require("superagent");
 
-module.exports.process = function process(intentData, registry, callback) {
+module.exports.process = function process(intentData, registry, log, callback) {
   if (intentData.intent[0].value !== "time") {
     return callback(new Error(`Expected time intent, but got ${intentData.intent[0].value}.`));
   }
@@ -18,10 +18,10 @@ module.exports.process = function process(intentData, registry, callback) {
 
   request.get(`http://${service.ip}:${service.port}/service/${encodeURI(location)}`, (err, res) => {
     if (err || res.statusCode !== 200 || !res.body.result) {
-      console.log(err);
+      log.error(err);
       return callback(false, `I had a problem finding out the time in ${location}.`);
     }
 
     return callback(false, `In ${location} it is now ${res.body.result}.`);
   });
-}
+};

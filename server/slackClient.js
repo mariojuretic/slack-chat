@@ -3,17 +3,18 @@
 const { RTMClient } = require("@slack/rtm-api");
 
 class SlackClient {
-  constructor(token, logLevel, nlp, registry) {
+  constructor(token, logLevel, nlp, registry, log) {
     this._rtm = new RTMClient(token, { logLevel });
     this._nlp = nlp;
     this._registry = registry;
+    this._log = log;
 
     this._addAuthenticatedHandler(this._handleOnAuthenticated);
     this._rtm.on("message", this._handleOnMessage.bind(this));
   }
 
   _handleOnAuthenticated(connectData) {
-    console.log(`Logged in as ${connectData.self.name} of team ${connectData.team.name}.`);
+    this._log.info(`Logged in as ${connectData.self.name} of team ${connectData.team.name}.`);
   }
 
   _addAuthenticatedHandler(handler) {
@@ -24,7 +25,7 @@ class SlackClient {
     if (message.text.toLowerCase().includes("jane")) {
       this._nlp.ask(message.text, (err, res) => {
         if (err) {
-          console.log(err);
+          this._log.error(err);
           return;
         }
 
@@ -35,17 +36,17 @@ class SlackClient {
 
           const intent = require("./intents/" + res.intent[0].value + "Intent");
 
-          intent.process(res, this._registry, (error, response) => {
+          intent.process(res, this._registry, this._log, (error, response) => {
             if (error) {
-              console.log(error.message);
+              this._log.error(error.message);
               return;
             }
 
             return this._rtm.sendMessage(response, message.channel);
           });
         } catch(err) {
-          console.log(err);
-          console.log(res);
+          this._log.error(err);
+          this._log.error(res);
           this._rtm.sendMessage("Sorry, I don't know what you're talking about.", message.channel);
         }
       });
