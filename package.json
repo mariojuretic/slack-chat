@@ -4,13 +4,31 @@
   "description": "",
   "main": "server/service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test eslint bin server && nyc mocha --recursive test --exit",
+    "start": "node bin/run"
+  },
+  "engines": {
+    "node": "10.15.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mariojuretic/slack-chat.git"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@slack/rtm-api": "^5.0.0",
+    "bunyan": "^1.8.12",
+    "cross-env": "^5.2.0",
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "superagent": "^5.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-string": "^1.5.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.0.0",
+    "supertest": "^4.0.2"
   }
 }
